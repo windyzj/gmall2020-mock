@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.version>2020-05-10</project.version>
+        <skipTests>true</skipTests>
+    </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.7.RELEASE</version>
+    </parent>
+    <groupId>com.atguigu.gmall2020</groupId>
+    <artifactId>gmall2020-mock</artifactId>
+    <version>${project.version}</version>
+    <name>gmall2020-mock</name>
+
+
+
+
+    <modules>
+        <module>gmall2020-common</module>
+        <module>gmall2020-mock-db</module>
+        <module>gmall2020-mock-log</module>
+    </modules>
+
+<dependencies>
+
+    <!-- sfl4j -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.7</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.7</version>
+    </dependency>
+
+    <!--lombok用来简化实体类-->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+    </dependency>
+</dependencies>
+
+
+
+
+</project>
