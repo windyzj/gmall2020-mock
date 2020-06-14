@@ -2,6 +2,8 @@ package com.atguigu.gmall2020.mock.db.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +41,9 @@ public class ActivityOrder implements Serializable {
      */
     private Long orderId;
 
+
+    @TableField(exist = false)
+    private OrderInfo orderInfo;
     /**
      * 发生日期
      */

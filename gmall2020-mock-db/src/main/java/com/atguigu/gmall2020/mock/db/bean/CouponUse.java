@@ -73,4 +73,7 @@ public class CouponUse implements Serializable {
     @TableField(exist = false)
     private CouponInfo couponInfo;
 
+    @TableField(exist = false)
+    private OrderInfo orderInfo;
+
 }

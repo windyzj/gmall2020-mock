@@ -85,7 +85,7 @@ public class CouponUseServiceImpl extends ServiceImpl<CouponUseMapper, CouponUse
 
     }
 
-    public void usingCoupon(List<OrderInfo> orderInfoList) {
+    public List<CouponUse>  usingCoupon(List<OrderInfo> orderInfoList) {
         List<CouponUse> couponUseListForUpdate = new ArrayList<>();
 
         Date date = ParamUtil.checkDate(mockDate);
@@ -116,6 +116,7 @@ public class CouponUseServiceImpl extends ServiceImpl<CouponUseMapper, CouponUse
                             ||skuInfo.getCategory3Id().equals(couponInfo.getCategory3Id());
                     if (canUseCoupon) {
                         couponUse.setOrderId(orderInfo.getId());
+                        couponUse.setOrderInfo(orderInfo );
                         if (couponUse.getCouponStatus().equals(GmallConstant.COUPON_STATUS_UNUSED)) {
                             couponUse.setCouponStatus(GmallConstant.COUPON_STATUS_USING);
                             couponUse.setUsingTime(date);
@@ -140,8 +141,12 @@ public class CouponUseServiceImpl extends ServiceImpl<CouponUseMapper, CouponUse
             }
         }
 
-        saveBatch(couponUseListForUpdate);
+         return couponUseListForUpdate ;
 
+    }
+
+    public  void  saveCouponUseList( List<CouponUse> couponUseList){
+        saveBatch(couponUseList,100);
     }
 
 

@@ -167,16 +167,33 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
            cartInfo.setIsOrdered(1);
            cartInfo.setOrderTime(new Date());
            cartInfoService.update(cartInfo,new QueryWrapper<CartInfo>().in("id",cartIdListForUpdate));
-           saveBatch(orderInfoList);
+
            log.warn("共生成订单"+orderInfoList.size()+"条");
+           List<ActivityOrder> activityOrderList=null;
             if(joinActivity){
-                activityOrderService.genActivityOrder(orderInfoList,ifClear);
-                saveOrUpdateBatch(  orderInfoList);
+                activityOrderList= activityOrderService.genActivityOrder(orderInfoList, ifClear);
             }
+
+            List<CouponUse> couponUseList=null;
             if(useCoupon){
-                couponUseService.usingCoupon(orderInfoList);
-                saveOrUpdateBatch(orderInfoList);
+                couponUseList = couponUseService.usingCoupon(orderInfoList);
             }
+
+           saveBatch(orderInfoList);
+           if(activityOrderList!=null&&activityOrderList.size()>0){
+               for (ActivityOrder activityOrder : activityOrderList) {
+                   activityOrder.setOrderId ( activityOrder.getOrderInfo().getId());
+               }
+               activityOrderService.saveActivityOrderList(activityOrderList);
+           }
+
+            if(couponUseList!=null&&couponUseList.size()>0){
+                for (CouponUse couponUse : couponUseList) {
+                    couponUse.setOrderId ( couponUse.getOrderInfo().getId());
+                }
+                couponUseService.saveCouponUseList(couponUseList);
+            }
+
 
            orderStatusLogService.genOrderStatusLog(orderInfoList);
     }

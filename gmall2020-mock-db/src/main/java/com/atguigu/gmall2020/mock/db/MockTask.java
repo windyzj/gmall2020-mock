@@ -42,6 +42,9 @@ public class MockTask {
 
     @Value("${mock.clear:0}")
      String ifClear;
+
+    @Value("${mock.clear.user:0}")
+    String ifClearUser;
 //    @Value("mockdb.count.cart")
 //    Integer cartCount;
 //    @Value("mockdb.count.order")
@@ -59,7 +62,7 @@ public class MockTask {
         log.warn("--------开始生成数据--------");
         Boolean ifClear = ParamUtil.checkBoolean(this.ifClear);
         log.warn("--------开始生成用户数据--------");
-        userInfoService.genUserInfos( ifClear);
+        userInfoService.genUserInfos( ParamUtil.checkBoolean(this.ifClearUser));
         log.warn("--------开始生成收藏数据--------");
         favorInfoService.genFavors( ifClear);
         log.warn("--------开始生成购物车数据--------");

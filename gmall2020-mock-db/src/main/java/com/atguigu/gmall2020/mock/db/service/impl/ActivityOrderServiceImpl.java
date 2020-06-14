@@ -40,7 +40,7 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
     String mockDate;
 
 
-    public void  genActivityOrder( List<OrderInfo> orderInfoList ,Boolean ifClear){
+    public List<ActivityOrder>   genActivityOrder( List<OrderInfo> orderInfoList ,Boolean ifClear){
         Date date = ParamUtil.checkDate(mockDate);
 
         if(ifClear){
@@ -61,15 +61,21 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
                        orderInfo.setBenefitReduceAmount(BigDecimal.valueOf(RandomNum.getRandInt(1, (orderInfo.getOriginalTotalAmount().intValue() / 2))));
                        orderInfo.sumTotalAmount();
 
-                       activityOrderList.add(new ActivityOrder(null, activitySku.getActivityId(), orderInfo.getId(), date));
+                       activityOrderList.add(new ActivityOrder(null, activitySku.getActivityId(), orderInfo.getId(),orderInfo, date));
                        break orderDetailLoop;
                    }
                 }
             }
         }
         log.warn("共有"+activityOrderList.size()+"订单参与活动条");
-        saveBatch(activityOrderList,100);
+        return activityOrderList;
 
+
+    }
+
+
+    public  void  saveActivityOrderList( List<ActivityOrder> activityOrderList){
+        saveBatch(activityOrderList,100);
     }
 
 }

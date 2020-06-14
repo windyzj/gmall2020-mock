@@ -19,6 +19,8 @@ public interface ActivityOrderService extends IService<ActivityOrder> {
 
 
 
-    public void  genActivityOrder(List<OrderInfo> orderInfoList, Boolean ifClear);
+    public List<ActivityOrder>  genActivityOrder(List<OrderInfo> orderInfoList, Boolean ifClear);
+
+    public  void  saveActivityOrderList( List<ActivityOrder> activityOrderList);
 
 }

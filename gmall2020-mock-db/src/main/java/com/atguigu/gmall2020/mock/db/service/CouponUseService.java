@@ -15,8 +15,14 @@ import java.util.List;
  * @since 2020-02-26
  */
 public interface CouponUseService extends IService<CouponUse> {
+
     public void genCoupon(Boolean ifClear);
-    public   void  usedCoupon(List<OrderInfo> orderInfoList);
-    public void usingCoupon(List<OrderInfo> orderInfoList);
+
+    public  void  usedCoupon(List<OrderInfo> orderInfoList);
+
+    public List<CouponUse> usingCoupon(List<OrderInfo> orderInfoList);
+
+    public  void  saveCouponUseList( List<CouponUse> couponUseList);
+
 
 }
