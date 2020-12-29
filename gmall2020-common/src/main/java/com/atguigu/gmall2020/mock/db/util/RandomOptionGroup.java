@@ -74,6 +74,10 @@ public class RandomOptionGroup<T> {
 
     }
 
+    public   RandomOptionGroup(String trueRate){
+        this(  ParamUtil.checkRatioNum(trueRate) ,100- ParamUtil.checkRatioNum(trueRate));
+    }
+
     public  T  getValue() {
         int i = new Random().nextInt(totalWeight);
         return (T)optList.get(i).getValue();

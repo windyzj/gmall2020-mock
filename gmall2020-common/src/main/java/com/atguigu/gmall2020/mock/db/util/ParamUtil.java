@@ -68,13 +68,24 @@ public class ParamUtil {
 
     }
 
+    public static final  String[] checkArray(String str){
+
+        if(str==null){
+            throw new RuntimeException("搜索词为空");
+        }
+
+         String[] split = str.split(",");
+         return  split;
+
+    }
+
 
     public static final Integer checkCount(String count){
         try {
             if(count==null){
                 return 0;
             }
-            Integer rateNum = Integer.valueOf(count);
+            Integer rateNum = Integer.valueOf(count.trim());
             return  rateNum;
         } catch (Exception e) {
             throw new RuntimeException("输入的数据必须为数字");
