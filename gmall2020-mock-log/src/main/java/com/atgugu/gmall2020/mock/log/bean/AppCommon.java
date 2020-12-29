@@ -24,7 +24,7 @@ public class AppCommon {
     private String ar;  // (String) 区域
     private String md;  // (String) 手机型号
     private String ba;  // (String) 手机品牌
-
+    private String is_new; // 是否新用户
 
    public  static AppCommon build(   ){
          String mid; // (String) 设备唯一标识
@@ -35,7 +35,7 @@ public class AppCommon {
          String ar;  // (String) 区域
          String md;  // (String) 手机型号
          String ba;  // (String) 手机品牌
-
+         String isnew;
 
         mid="mid_"+RandomNum.getRandInt(1,AppConfig.max_mid)+"";;
 
@@ -98,7 +98,9 @@ public class AppCommon {
 
         uid= RandomNum.getRandInt(1,AppConfig.max_uid)+"";
 
-       AppCommon appBase = new AppCommon(mid, uid, vc, ch, os, ar, md, ba  );
+       isnew= RandomNum.getRandInt(0,1)+"";
+
+       AppCommon appBase = new AppCommon(mid, uid, vc, ch, os, ar, md, ba ,isnew );
        return appBase;
    }
 

@@ -1,6 +1,6 @@
 package com.atguigu.gmall2020.mock.db.mapper;
 
-import com.atguigu.gmall2020.mock.db.bean.ActivityOrder;
+import com.atguigu.gmall2020.mock.db.bean.OrderDetailActivity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author zhangchen
  * @since 2020-02-25
  */
-public interface ActivityOrderMapper extends BaseMapper<ActivityOrder> {
+public interface ActivityOrderMapper extends BaseMapper<OrderDetailActivity> {
 
 }

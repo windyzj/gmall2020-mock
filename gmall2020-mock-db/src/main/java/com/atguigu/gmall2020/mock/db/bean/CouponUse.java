@@ -1,6 +1,8 @@
 package com.atguigu.gmall2020.mock.db.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -70,10 +73,21 @@ public class CouponUse implements Serializable {
      */
     private Date expireTime;
 
+
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+
+    @TableField(exist = false)
+    private OrderInfo orderInfo;
+
     @TableField(exist = false)
     private CouponInfo couponInfo;
 
     @TableField(exist = false)
-    private OrderInfo orderInfo;
+    private List<CouponRange> couponRangeList;
 
 }

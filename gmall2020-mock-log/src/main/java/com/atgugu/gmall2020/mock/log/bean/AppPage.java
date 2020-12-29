@@ -57,7 +57,7 @@ public class AppPage {
                item= RandomNum.getRandInt(1, AppConfig.max_sku_id)+"";
           }else if(pageId== PageId.good_list){
                itemType=ItemType.keyword;
-               item=  new RandomOptionGroup("小米手机","荣耀手机","联想").getRandStringValue();
+               item=  new RandomOptionGroup(AppConfig.searchKeywords).getRandStringValue();
           }else if(pageId== PageId.trade||pageId== PageId.payment||pageId== PageId.payment_done) {
                itemType=ItemType.sku_ids;
                item= RandomNumString.getRandNumString(1, AppConfig.max_sku_id,RandomNum.getRandInt(1,3),",",false);

@@ -6,6 +6,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,7 +22,8 @@ import java.io.Serializable;
  */
 @Data
 @AllArgsConstructor
-public class ActivityOrder implements Serializable {
+@Builder
+public class OrderDetailActivity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,6 +32,13 @@ public class ActivityOrder implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+
+
+    private Long orderDetailId ;
+
+    private Long activityRuleId;
+
+    private Long skuId;
 
     /**
      * 活动id 
@@ -42,53 +51,20 @@ public class ActivityOrder implements Serializable {
     private Long orderId;
 
 
+
+    @TableField(exist = false)
+    private OrderDetail orderDetail;
     @TableField(exist = false)
     private OrderInfo orderInfo;
+    @TableField(exist = false)
+    private ActivityRule activityRule;
+
     /**
      * 发生日期
      */
     private Date createTime;
 
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(Long activityId) {
-        this.activityId = activityId;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    @Override
-    public String toString() {
-        return "ActivityOrder{" +
-        "id=" + id +
-        ", activityId=" + activityId +
-        ", orderId=" + orderId +
-        ", createTime=" + createTime +
-        "}";
-    }
 }

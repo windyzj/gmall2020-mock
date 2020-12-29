@@ -5,32 +5,36 @@ import com.atgugu.gmall2020.mock.log.bean.*;
 import com.atgugu.gmall2020.mock.log.config.AppConfig;
 import com.atgugu.gmall2020.mock.log.enums.PageId;
 import com.atgugu.gmall2020.mock.log.util.HttpUtil;
+import com.atgugu.gmall2020.mock.log.util.KafkaUtil;
+import com.atgugu.gmall2020.mock.log.util.LogUtil;
 import com.atguigu.gmall2020.mock.db.util.ConfigUtil;
+import com.atguigu.gmall2020.mock.db.util.ParamUtil;
 import com.atguigu.gmall2020.mock.db.util.RandomNum;
 import com.atguigu.gmall2020.mock.db.util.RandomOptionGroup;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
-public class Mocker   {
-
-
-
-
-
+@Component
+public class Mocker implements Runnable  {
 
     private Long ts;
 
-
+    @Autowired
+    KafkaTemplate kafkaTemplate;
 
     public  List<AppMain> doAppMock(){
 
         List<AppMain> logList=new ArrayList<>();
-       ts=  AppConfig.date.getTime();
+
+        Date curDate = ParamUtil.checkDate(AppConfig.mock_date);
+        ts=  curDate.getTime();
 
        // 启动
         AppMain.AppMainBuilder appMainBuilder = AppMain.builder();
@@ -57,7 +61,7 @@ public class Mocker   {
            builder.add(path,rate);
        }
        List chosenPath = builder.build().getRandomOpt().getValue();
-        ts+=appStart.getLoading_time() ;
+        //ts+=appStart.getLoading_time() ;
        //逐个输入日志
         // 每条日志  1  主行为  2 曝光  3 错误
        PageId lastPageId=null;
@@ -70,6 +74,9 @@ public class Mocker   {
            //添加页面
            PageId pageId = EnumUtils.getEnum(PageId.class, path);
            AppPage page =   AppPage.build (pageId,lastPageId,pageDuringTime) ;
+           if(pageId==null){
+               System.out.println();
+           }
            pageBuilder.page(page);
            //置入上一个页面
            lastPageId=page.getPage_id();
@@ -87,7 +94,7 @@ public class Mocker   {
            pageBuilder.ts(ts);
            pageBuilder.checkError();
            logList.add(pageBuilder.build());
-           ts+= pageDuringTime ;
+          // ts+= pageDuringTime ;
        }
 
        //  随机发送通知日志
@@ -110,13 +117,16 @@ public class Mocker   {
 
 
     public void run() {
+
         List<AppMain> appMainList = doAppMock();
 
         for (AppMain appMain : appMainList) {
             if(AppConfig.mock_type.equals("log")){
-                log.info(appMain.toString());
+                LogUtil.log(appMain.toString());
             }else if(AppConfig.mock_type.equals("http")){
-                HttpUtil.post(appMain.toString());
+                HttpUtil.get(appMain.toString());
+            }else if(AppConfig.mock_type.equals("kafka")){
+                  KafkaUtil.send(AppConfig.kafka_topic,appMain.toString());
             }
             try {
                 Thread.sleep(AppConfig.log_sleep);

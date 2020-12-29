@@ -16,7 +16,9 @@ public class AppConfig {
 
 
 
- public static Date date=new Date();
+  //public static Date date=new Date();
+
+   public static  String mock_date="";
 
    public static Integer mock_count=1000;
 
@@ -28,6 +30,7 @@ public class AppConfig {
 
    public static Integer max_uid=500;
 
+   public static Integer max_coupon_id=3;
 
    public static  Integer max_sku_id=10 ;
 
@@ -54,15 +57,26 @@ public class AppConfig {
 
     public static  Integer if_add_address =15;
 
+    public static  Integer if_get_coupon =25;
 
     public static Integer  max_display_count=10;
 
     public static Integer  min_display_count=4;
 
     public static Integer  max_activity_count=2;
+    public static Integer  max_pos_id=5;
 
 
     public static Integer[]  sourceTypeRate;
+
+
+    public static String[]  searchKeywords;
+
+    public static String kafka_server;
+    public static String kafka_topic;
+
+
+
 
 
     @Value("${mock.type}")
@@ -73,6 +87,15 @@ public class AppConfig {
     @Value("${mock.url}")
     public   void setMock_url(String mock_url) {
         AppConfig.mock_url = mock_url;
+    }
+
+    @Value("${mock.kafka-server}")
+    public   void setKafka_server(String kafka_server) {
+        AppConfig.kafka_server = kafka_server;
+    }
+    @Value("${mock.kafka-topic}")
+    public   void setKafka_topic(String kafka_topic) {
+        AppConfig.kafka_topic = kafka_topic;
     }
 
 
@@ -146,9 +169,14 @@ public class AppConfig {
     }
 
 
+//    public     void setMockDate(String  mockDate) {
+//        AppConfig.date = ParamUtil.checkDate(mockDate);
+//
+//    }
+
     @Value("${mock.date}")
     public     void setMockDate(String  mockDate) {
-       AppConfig.date = ParamUtil.checkDate(mockDate);
+        AppConfig.mock_date =  mockDate ;
 
     }
 
@@ -159,7 +187,21 @@ public class AppConfig {
 
     }
 
+    @Value("${mock.search.keyword}")
+    public void setSearchKeywords(String keywords){
+        AppConfig.searchKeywords= ParamUtil.checkArray(keywords);
+    }
 
+
+    @Value("${mock.if_get_coupon_rate}")
+    public void setIf_get_coupon(String if_get_coupon_ratio){
+        AppConfig.if_get_coupon= ParamUtil.checkRatioNum( if_get_coupon_ratio);
+    }
+
+    @Value("${mock.max.coupon-id}")
+    public   void setMaxCouponId(String couponId) {
+        AppConfig.max_coupon_id = ParamUtil.checkCount(couponId);
+    }
 
 
 

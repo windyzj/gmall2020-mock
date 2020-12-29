@@ -18,9 +18,23 @@ public class MockTask {
     public void mainTask( ) {
 
         for (int i = 0; i < AppConfig.mock_count; i++) {
-            //poolExecutor.execute(new Mocker());
+           poolExecutor.execute(new Mocker());
             System.out.println("active+" + poolExecutor.getActiveCount());
-              new Mocker().run();
+            //  new Mocker().run();
         }
+        while(true){
+            try {
+                Thread.sleep(1000);
+                if(poolExecutor.getActiveCount()==0){
+                    poolExecutor.destroy();
+                    return;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
     }
 }

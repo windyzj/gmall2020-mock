@@ -43,9 +43,9 @@ public class PaymentInfo implements Serializable {
     private Long userId;
 
     /**
-     * 支付宝交易流水编号
+     * 第三方交易流水编号
      */
-    private String alipayTradeNo;
+    private String tradeNo;
 
     /**
      * 支付金额
@@ -63,26 +63,20 @@ public class PaymentInfo implements Serializable {
     private String paymentType;
 
     /**
-     * 支付时间
+     *   发起支付时间
      */
-    private Date paymentTime;
+    private Date createTime;
+
+    /**
+     *    第三方支付回调时间
+     */
+    private Date callbackTime;
+
+    /**
+     *    第三方支付回调信息
+     */
+    private String  callbackContent;
 
 
 
-
-
-    @Override
-    public String toString() {
-        return "PaymentInfo{" +
-        "id=" + id +
-        ", outTradeNo=" + outTradeNo +
-        ", orderId=" + orderId +
-        ", userId=" + userId +
-        ", alipayTradeNo=" + alipayTradeNo +
-        ", totalAmount=" + totalAmount +
-        ", subject=" + subject +
-        ", paymentType=" + paymentType +
-        ", paymentTime=" + paymentTime +
-        "}";
-    }
 }

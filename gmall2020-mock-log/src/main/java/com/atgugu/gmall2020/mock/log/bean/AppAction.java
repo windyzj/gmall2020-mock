@@ -44,6 +44,7 @@ public class AppAction {
           Boolean ifCartAddNum=RandomOptionGroup.builder().add(true ,AppConfig.if_cart_add_num_rate).add(false,100-AppConfig.if_cart_add_num_rate).build().getRandBoolValue();
           Boolean ifCartMinusNum=RandomOptionGroup.builder().add(true ,AppConfig.if_cart_minus_num_rate).add(false,100-AppConfig.if_cart_minus_num_rate).build().getRandBoolValue();
           Boolean ifCartRm=RandomOptionGroup.builder().add(true ,AppConfig.if_cart_rm_rate).add(false,100-AppConfig.if_cart_rm_rate).build().getRandBoolValue();
+          Boolean ifGetCouponRm=RandomOptionGroup.builder().add(true ,AppConfig.if_get_coupon).add(false,100-AppConfig.if_get_coupon).build().getRandBoolValue();
           if(appPage.page_id== PageId.good_detail){
 
                if(ifFavor){
@@ -51,10 +52,16 @@ public class AppAction {
                     actionList.add(favorAction);
                }
                if(ifCart){
-                    AppAction favorAction = new AppAction(ActionId.cart_add, appPage.item_type, appPage.item);
-                    actionList.add(favorAction);
+                    AppAction cartAction = new AppAction(ActionId.cart_add, appPage.item_type, appPage.item);
+                    actionList.add(cartAction);
 
                }
+               if(ifGetCouponRm){
+                    int couponId = RandomNum.getRandInt(1, AppConfig.max_coupon_id);
+                    AppAction couponAction = new AppAction(ActionId.get_coupon, ItemType.coupon_id, String.valueOf(couponId));
+                    actionList.add(couponAction);
+               }
+
           }
           else if(appPage.page_id==PageId.cart){
 

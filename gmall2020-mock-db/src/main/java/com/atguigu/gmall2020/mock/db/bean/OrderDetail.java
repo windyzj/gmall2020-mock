@@ -65,6 +65,14 @@ public class OrderDetail implements Serializable {
     private Date createTime;
 
 
+    private BigDecimal splitTotalAmount;
+
+    private BigDecimal splitCouponAmount;
+
+    private BigDecimal splitActivityAmount;
+
+
+
     @TableField(exist = false)
     private SkuInfo skuInfo;
 

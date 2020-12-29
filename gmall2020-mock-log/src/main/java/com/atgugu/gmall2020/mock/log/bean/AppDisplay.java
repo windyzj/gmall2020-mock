@@ -25,6 +25,8 @@ public class AppDisplay {
 
     Integer order;
 
+    Integer pos_id;
+
     public static List<AppDisplay> buildList(AppPage appPage) {
         List<AppDisplay> displayList = new ArrayList();
 
@@ -32,9 +34,10 @@ public class AppDisplay {
         if(appPage.page_id==PageId.home ||appPage.page_id == PageId.discovery
                 ||appPage.page_id == PageId.category){
             int displayCount = RandomNum.getRandInt(1, max_activity_count);
+            int pos_id = RandomNum.getRandInt(1, max_pos_id);
             for (int i = 1; i <= displayCount; i++) {
                 int actId = RandomNum.getRandInt(1, max_activity_count);
-                AppDisplay appDisplay = new AppDisplay(ItemType.activity_id,  actId + "",DisplayType.activity, i);
+                AppDisplay appDisplay = new AppDisplay(ItemType.activity_id,  actId + "",DisplayType.activity, i,pos_id);
                 displayList.add(appDisplay);
             }
         }
@@ -50,11 +53,12 @@ public class AppDisplay {
             int  activityCount=  displayList.size() ;// 商品显示从 活动后面开始
             for (int i = 1+activityCount; i <= displayCount+activityCount; i++) {
                 int skuId = RandomNum.getRandInt(1, max_sku_id);
+                int pos_id = RandomNum.getRandInt(1, max_pos_id);
               RandomOptionGroup<DisplayType> dispTypeGroup = RandomOptionGroup.<DisplayType>builder().add(DisplayType.promotion, 30)
                         .add(DisplayType.query, 60).add(DisplayType.recommend, 10).build();
                 DisplayType displayType =  dispTypeGroup.getValue();
 
-                AppDisplay appDisplay = new AppDisplay(ItemType.sku_id,  skuId + "", displayType,i);
+                AppDisplay appDisplay = new AppDisplay(ItemType.sku_id,  skuId + "", displayType,i,pos_id);
                 displayList.add(appDisplay);
             }
         }

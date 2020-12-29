@@ -25,7 +25,7 @@ public class AppStart   {
         private Integer open_ad_ms;//开屏广告持续时间
         private Integer open_ad_skip_ms;//开屏广告持续多长时间，点击跳过 未点击为0
         private Integer loading_time;//加载时长：计算下拉开始到接口返回数据的时间，（开始加载报0，加载成功或加载失败才上报时间）
-
+        private Integer first_open;
         public Builder( ){
              entry=new RandomOptionGroup<String>(new RanOpt<String>("install", 5),
                     new RanOpt<String>("icon", 75),
@@ -34,11 +34,12 @@ public class AppStart   {
             open_ad_ms=RandomNum.getRandInt(1000,10000) ;
             open_ad_skip_ms=  RandomOptionGroup.builder().add(0,50).add(RandomNum.getRandInt(1000,open_ad_ms) ,50).build().getRandIntValue() ;
             loading_time=RandomNum.getRandInt(1000,20000) ;
+            first_open=RandomNum.getRandInt(0,1);
 
         }
 
         public AppStart build(){
-             return  new AppStart(entry,open_ad_id,  open_ad_ms,open_ad_skip_ms,loading_time);
+             return  new AppStart(entry,open_ad_id,  open_ad_ms,open_ad_skip_ms,loading_time  );
         }
 
     }

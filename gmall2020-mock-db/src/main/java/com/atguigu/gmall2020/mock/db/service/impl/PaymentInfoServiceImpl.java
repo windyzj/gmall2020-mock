@@ -1,8 +1,6 @@
 package com.atguigu.gmall2020.mock.db.service.impl;
 
-import com.atguigu.gmall2020.mock.db.bean.OrderDetail;
 import com.atguigu.gmall2020.mock.db.bean.OrderInfo;
-import com.atguigu.gmall2020.mock.db.bean.OrderStatusLog;
 import com.atguigu.gmall2020.mock.db.bean.PaymentInfo;
 import com.atguigu.gmall2020.mock.db.constant.GmallConstant;
 import com.atguigu.gmall2020.mock.db.mapper.PaymentInfoMapper;
@@ -91,13 +89,14 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
            if( ifPayment.getRandBoolValue() ){
                PaymentInfo paymentInfo = new PaymentInfo();
                paymentInfo.setOrderId(orderInfo.getId());
-               paymentInfo.setTotalAmount(orderInfo.getFinalTotalAmount());
+               paymentInfo.setTotalAmount(orderInfo.getTotalAmount());
                paymentInfo.setUserId(orderInfo.getUserId());
                paymentInfo.setOutTradeNo(orderInfo.getOutTradeNo());
-               paymentInfo.setAlipayTradeNo(RandomNumString.getRandNumString(1,9,34,""));
+               paymentInfo.setTradeNo(RandomNumString.getRandNumString(1,9,34,""));
                paymentInfo.setPaymentType(paymentOptionGroup.getRandStringValue());
                paymentInfo.setSubject(orderInfo.getTradeBody());
-               paymentInfo.setPaymentTime(date);
+               paymentInfo.setCreateTime(date);
+               paymentInfo.setCallbackTime(DateUtils.addSeconds(date,20) );
                paymentList.add(paymentInfo);
 
                orderInfo.setOrderStatus(GmallConstant.ORDER_STATUS_PAID);

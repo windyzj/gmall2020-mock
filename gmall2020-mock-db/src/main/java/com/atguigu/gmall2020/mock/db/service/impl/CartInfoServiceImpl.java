@@ -3,12 +3,14 @@ package com.atguigu.gmall2020.mock.db.service.impl;
 import com.atguigu.gmall2020.mock.db.bean.CartInfo;
 import com.atguigu.gmall2020.mock.db.bean.OrderInfo;
 import com.atguigu.gmall2020.mock.db.bean.SkuInfo;
+import com.atguigu.gmall2020.mock.db.bean.UserInfo;
 import com.atguigu.gmall2020.mock.db.constant.GmallConstant;
 import com.atguigu.gmall2020.mock.db.mapper.CartInfoMapper;
 import com.atguigu.gmall2020.mock.db.mapper.SkuInfoMapper;
 import com.atguigu.gmall2020.mock.db.mapper.UserInfoMapper;
 import com.atguigu.gmall2020.mock.db.service.CartInfoService;
 import com.atguigu.gmall2020.mock.db.service.SkuInfoService;
+import com.atguigu.gmall2020.mock.db.service.UserInfoService;
 import com.atguigu.gmall2020.mock.db.util.ParamUtil;
 import com.atguigu.gmall2020.mock.db.util.RandomNum;
 import com.atguigu.gmall2020.mock.db.util.RandomNumString;
@@ -20,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -40,14 +39,17 @@ public class CartInfoServiceImpl extends ServiceImpl<CartInfoMapper, CartInfo> i
     SkuInfoService skuInfoService;
 
     @Autowired
-    UserInfoMapper userInfoMapper;
+    UserInfoService userInfoService;
 
 
-    @Value("${mock.cart.count:100}")
-    String  cartCountString;
+    @Value("${mock.cart.user-rate:50}")
+    String cartUserRate;
 
-    @Value("${mock.cart.sku-maxcount-per-cart:3}")
-    String  skuMaxCountPerCart;
+    @Value("${mock.cart.max-sku-count:8}")
+    String  maxSkuCount;
+
+    @Value("${mock.cart.max-sku-num:3}")
+    String  maxSkuNum;
 
     @Value("${mock.date}")
     String mockDate;
@@ -56,34 +58,57 @@ public class CartInfoServiceImpl extends ServiceImpl<CartInfoMapper, CartInfo> i
     String sourceTypeRate;
 
     public void  genCartInfo( boolean ifClear){
-        Integer cartCount = ParamUtil.checkCount(cartCountString);
-        Date date = ParamUtil.checkDate(mockDate);
 
+        Date date = ParamUtil.checkDate(mockDate);
+        RandomOptionGroup cartUserRateDice = new RandomOptionGroup(this.cartUserRate);
 
         if(ifClear){
             remove(new QueryWrapper<>());
         }
         List<SkuInfo> skuInfoList  = skuInfoService.list(new QueryWrapper<SkuInfo>());
-        Integer userTotal = userInfoMapper.selectCount(new QueryWrapper<>());
+
+        List<UserInfo> userInfoList = userInfoService.list(new QueryWrapper<>());
+        List<CartInfo> cartInfoExistsList = this.list(new QueryWrapper<>());
 
         List<CartInfo> cartInfoList= new ArrayList<>();
         HashSet<String> userIdAndSkuIdSet = new HashSet<>();
-        for (int i = 0; i <  cartCount; i++) {
-            SkuInfo skuInfo = skuInfoList.get(RandomNum.getRandInt(0,skuInfoList.size()-1));
-            Long userId = RandomNum.getRandInt(1, userTotal)+0L;
-            boolean addSuccess = userIdAndSkuIdSet.add(userId + "_" + skuInfo.getId());
+        for (UserInfo userInfo : userInfoList) {
+              if(cartUserRateDice.getRandBoolValue()){
+                  int skuCount = RandomNum.getRandInt(1, ParamUtil.checkCount(maxSkuCount));
+                  Set skuSet=new HashSet();
+                  for (int i = 1; i <=skuCount ; i++) {
+                      int skuIndex = RandomNum.getRandInt(0, skuInfoList.size() - 1);
+                      boolean noExists = skuSet.add(skuIndex);
+                      if(noExists){
+                          SkuInfo skuInfo = skuInfoList.get(skuIndex);
+                          CartInfo cartInfo = initCartInfo(skuInfo, userInfo.getId(), date);
+                          cartInfo  = checkAndMergeCart(cartInfo, cartInfoExistsList);
+                          cartInfoList.add(cartInfo);
+                      }
 
-            if( addSuccess){
-                cartInfoList.add(initCartInfo(skuInfo,  userId,date)) ;
-            }
+                  }
 
+              }
         }
+
+
+
         log.warn("共生成购物车"+cartInfoList.size()+"条");
-        saveBatch(cartInfoList,100);
+        saveOrUpdateBatch(cartInfoList,100);
+    }
+
+    private  CartInfo checkAndMergeCart(CartInfo cartInfo,List<CartInfo> cartInfoExistsList){
+        for (CartInfo cartInfoExists : cartInfoExistsList) {
+            if(cartInfo.getUserId().equals(cartInfoExists.getUserId())&&cartInfo.getSkuId().equals(cartInfoExists.getSkuId())){
+                cartInfoExists.setSkuNum(cartInfo.getSkuNum()+cartInfoExists.getSkuNum());
+                return  cartInfoExists;
+            }
+        }
+        return cartInfo;
     }
 
     public  CartInfo initCartInfo( SkuInfo skuInfo,Long userId,Date date){
-        Integer skuCount = ParamUtil.checkCount(skuMaxCountPerCart);
+        Integer skuCount = ParamUtil.checkCount(maxSkuNum);
 
         Integer[] sourceTypeRateArray = ParamUtil.checkRate(this.sourceTypeRate,4);
         RandomOptionGroup sourceTypeGroup = RandomOptionGroup.builder().add(GmallConstant.SOURCE_TYPE_QUREY, sourceTypeRateArray[0])

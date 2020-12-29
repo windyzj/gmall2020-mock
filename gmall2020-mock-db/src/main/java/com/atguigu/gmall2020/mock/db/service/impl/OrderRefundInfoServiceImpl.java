@@ -1,14 +1,13 @@
 package com.atguigu.gmall2020.mock.db.service.impl;
 
-import com.atguigu.gmall2020.mock.db.bean.OrderDetail;
-import com.atguigu.gmall2020.mock.db.bean.OrderInfo;
-import com.atguigu.gmall2020.mock.db.bean.OrderRefundInfo;
-import com.atguigu.gmall2020.mock.db.bean.PaymentInfo;
+import com.atguigu.gmall2020.mock.db.bean.*;
 import com.atguigu.gmall2020.mock.db.constant.GmallConstant;
 import com.atguigu.gmall2020.mock.db.mapper.OrderRefundInfoMapper;
+import com.atguigu.gmall2020.mock.db.mapper.RefundPaymentMapper;
 import com.atguigu.gmall2020.mock.db.service.OrderInfoService;
 import com.atguigu.gmall2020.mock.db.service.OrderRefundInfoService;
 import com.atguigu.gmall2020.mock.db.service.OrderStatusLogService;
+import com.atguigu.gmall2020.mock.db.service.RefundPaymentService;
 import com.atguigu.gmall2020.mock.db.util.ParamUtil;
 import com.atguigu.gmall2020.mock.db.util.RanOpt;
 import com.atguigu.gmall2020.mock.db.util.RandomNumString;
@@ -44,6 +43,9 @@ public class OrderRefundInfoServiceImpl extends ServiceImpl<OrderRefundInfoMappe
     @Autowired
     OrderStatusLogService orderStatusLogService;
 
+    @Autowired
+    RefundPaymentService refundPaymentService;
+
     @Value("${mock.date}")
     String mockDate;
 
@@ -58,9 +60,12 @@ public class OrderRefundInfoServiceImpl extends ServiceImpl<OrderRefundInfoMappe
     @Value("${mock.refund.reason-rate}")
     String refundReasonRate;
 
+
+
     public void  genRefundsOrFinish(Boolean ifClear){
         if(ifClear){
             remove(new QueryWrapper<OrderRefundInfo>());
+            refundPaymentService.remove(new QueryWrapper<RefundPayment>());
         }
         Date date = ParamUtil.checkDate(mockDate);
         Integer ifRefundRateWeight = ParamUtil.checkRatioNum(this.ifRefundRate);
@@ -80,6 +85,7 @@ public class OrderRefundInfoServiceImpl extends ServiceImpl<OrderRefundInfoMappe
         orderInfoQueryWrapper.orderByAsc("id");
         List<OrderInfo> orderInfoList = orderInfoService.listWithDetail(orderInfoQueryWrapper);
         List<OrderRefundInfo> orderRefundInfoList=new ArrayList();
+        List<RefundPayment> refundPaymentList=new ArrayList();
         List<OrderInfo> orderInfoListForUpdate=new ArrayList<>();
         if(orderInfoList.size()==0){
             log.warn ("没有需要退款或完结的订单！！ ");
@@ -100,6 +106,21 @@ public class OrderRefundInfoServiceImpl extends ServiceImpl<OrderRefundInfoMappe
                 orderRefundInfo.setRefundReasonType(refundReasonOptionGroup.getRandStringValue());
                 orderRefundInfoList.add(orderRefundInfo);
 
+                RefundPayment refundPayment = new RefundPayment();
+                refundPayment.setOrderId(orderInfo.getId());
+
+                refundPayment.setSkuId(  orderRefundInfo.getSkuId() );
+                refundPayment.setPaymentType(GmallConstant.PAYMENT_TYPE_ALIPAY);
+                refundPayment.setRefundStatus(GmallConstant.REFUND_STATUS_APPROVED);
+                refundPayment.setTotalAmount(orderRefundInfo.getRefundAmount() );
+                refundPayment.setCreateTime(date);
+                refundPayment.setCallbackTime(date);
+                refundPayment.setOutTradeNo(RandomNumString.getRandNumString(1,9,15,""));
+                refundPayment.setSubject("退款");
+
+                refundPaymentList.add(refundPayment);
+
+
                 orderInfo.setOrderStatus(GmallConstant.ORDER_STATUS_REFUND);
                 orderInfoListForUpdate.add(orderInfo);
             }else {
@@ -117,8 +138,8 @@ public class OrderRefundInfoServiceImpl extends ServiceImpl<OrderRefundInfoMappe
         log.warn("共生成退款"+orderRefundInfoList.size()+"条");
         saveBatch(orderRefundInfoList);
 
-
-
+        refundPaymentService.saveBatch(refundPaymentList);
+        log.warn("共生成退款支付明细"+orderRefundInfoList.size()+"条");
 
     }
 }

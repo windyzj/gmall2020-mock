@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     @Autowired
     CouponUseServiceImpl couponUseService;
+
+    @Autowired
+    OrderDetailCouponService orderDetailCouponService;
 
     @Autowired
     SkuInfoService skuInfoService;
@@ -169,20 +173,24 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
            cartInfoService.update(cartInfo,new QueryWrapper<CartInfo>().in("id",cartIdListForUpdate));
 
            log.warn("共生成订单"+orderInfoList.size()+"条");
-           List<ActivityOrder> activityOrderList=null;
+           List<OrderDetailActivity> activityOrderList=null;
             if(joinActivity){
                 activityOrderList= activityOrderService.genActivityOrder(orderInfoList, ifClear);
             }
 
             List<CouponUse> couponUseList=null;
+            List<OrderDetailCoupon> orderDetailCouponList=null;
             if(useCoupon){
-                couponUseList = couponUseService.usingCoupon(orderInfoList);
+                Pair<List<CouponUse>, List<OrderDetailCoupon>> couponPair = couponUseService.usingCoupon(orderInfoList);
+                  couponUseList  = couponPair.getLeft();
+                  orderDetailCouponList = couponPair.getRight() ;
             }
 
            saveBatch(orderInfoList);
            if(activityOrderList!=null&&activityOrderList.size()>0){
-               for (ActivityOrder activityOrder : activityOrderList) {
+               for (OrderDetailActivity activityOrder : activityOrderList) {
                    activityOrder.setOrderId ( activityOrder.getOrderInfo().getId());
+                   activityOrder.setOrderDetailId ( activityOrder.getOrderDetail().getId());
                }
                activityOrderService.saveActivityOrderList(activityOrderList);
            }
@@ -192,6 +200,13 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
                     couponUse.setOrderId ( couponUse.getOrderInfo().getId());
                 }
                 couponUseService.saveCouponUseList(couponUseList);
+            }
+            if(orderDetailCouponList!=null&&orderDetailCouponList.size()>0){
+                for (OrderDetailCoupon orderDetailCoupon : orderDetailCouponList) {
+                    orderDetailCoupon.setOrderId(orderDetailCoupon.getOrderInfo().getId());
+                    orderDetailCoupon.setOrderDetailId(orderDetailCoupon.getOrderDetail().getId());
+                }
+                orderDetailCouponService.saveBatch(orderDetailCouponList,100);
             }
 
 

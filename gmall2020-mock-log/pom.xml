@@ -2,12 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+
+
     <parent>
         <artifactId>gmall2020-mock</artifactId>
         <groupId>com.atguigu.gmall2020</groupId>
-        <version>${projects.version}</version>
+        <version>2020</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <version>2020-12-18</version>
 
     <artifactId>gmall2020-mock-log</artifactId>
 
@@ -15,7 +21,7 @@
         <dependency>
             <groupId>com.atguigu.gmall2020</groupId>
             <artifactId>gmall2020-common</artifactId>
-            <version>${projects.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
 
@@ -29,6 +35,11 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
 
     </dependencies>

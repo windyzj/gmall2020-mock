@@ -2,6 +2,14 @@ package com.atguigu.gmall2020.mock.db.constant;
 
 public class GmallConstant {
 
+    public static final String REFUND_STATUS_APPROVING="0701";  //审批中
+    public static final String REFUND_STATUS_APPROVED="0702"; //审批不通过
+    public static final String REFUND_STATUS_DENY="0703";//审批不通过
+    public static final String REFUND_STATUS_SEND="0704";//已发货
+    public static final String REFUND_STATUS_FINISH ="0705";//退款完成
+    public static final String REFUND_STATUS_FAIL ="0706";//退款失败
+
+
      //10 单据状态
     public static final String ORDER_STATUS_UNPAID="1001";  //未支付
     public static final String ORDER_STATUS_PAID="1002"; //已支付
@@ -48,5 +56,20 @@ public class GmallConstant {
     public static final String SOURCE_TYPE_AUTO_RECOMMEND="2403";//   智能推荐
     public static final String SOURCE_TYPE_ACTIVITY="2404";//   促销活动
 
+
+    //购物券范围
+    public static final String COUPON_RANGE_TYPE_CATEGORY3="3301";//
+    public static final String COUPON_RANGE_TYPE_TRADEMARK="3302";//
+    public static final String COUPON_RANGE_TYPE_SPU="3303";//
+
+    //购物券类型
+    public static final String COUPON_TYPE_MJ="3201";//满减
+    public static final String COUPON_TYPE_ML="3202";// 满量打折
+    public static final String COUPON_TYPE_DJ="3203";//  代金券
+
+
+    public static final String ACTIVITY_RULE_TYPE_MJ="3101";
+    public static final String ACTIVITY_RULE_TYPE_ML="3102";
+    public static final String ACTIVITY_RULE_TYPE_ZK="3103";
 
 }

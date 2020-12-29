@@ -1,12 +1,12 @@
 package com.atguigu.gmall2020.mock.db.bean;
 
-import java.beans.Transient;
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.sun.org.apache.bcel.internal.generic.IFNULL;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -45,7 +45,7 @@ public class OrderInfo implements Serializable {
     /**
      * 总金额
      */
-    private BigDecimal finalTotalAmount;
+    private BigDecimal totalAmount;
 
     /**
      * 订单状态
@@ -118,7 +118,9 @@ public class OrderInfo implements Serializable {
 
     private BigDecimal feightFee;
 
-    private BigDecimal benefitReduceAmount;
+    private BigDecimal activityReduceAmount;
+
+    private BigDecimal couponReduceAmount;
 
 
 
@@ -127,156 +129,32 @@ public class OrderInfo implements Serializable {
     private List<OrderDetail> orderDetailList;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getConsignee() {
-        return consignee;
-    }
-
-    public void setConsignee(String consignee) {
-        this.consignee = consignee;
-    }
-
-    public String getConsigneeTel() {
-        return consigneeTel;
-    }
-
-    public void setConsigneeTel(String consigneeTel) {
-        this.consigneeTel = consigneeTel;
-    }
-
-
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public String getOrderComment() {
-        return orderComment;
-    }
-
-    public void setOrderComment(String orderComment) {
-        this.orderComment = orderComment;
-    }
-
-    public String getOutTradeNo() {
-        return outTradeNo;
-    }
-
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
-    }
-
-    public String getTradeBody() {
-        return tradeBody;
-    }
-
-    public void setTradeBody(String tradeBody) {
-        this.tradeBody = tradeBody;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getOperateTime() {
-        return operateTime;
-    }
-
-    public void setOperateTime(Date operateTime) {
-        this.operateTime = operateTime;
-    }
-
-    public Date getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(Date expireTime) {
-        this.expireTime = expireTime;
-    }
-
-    public String getTrackingNo() {
-        return trackingNo;
-    }
-
-    public void setTrackingNo(String trackingNo) {
-        this.trackingNo = trackingNo;
-    }
-
-    public Long getParentOrderId() {
-        return parentOrderId;
-    }
-
-    public void setParentOrderId(Long parentOrderId) {
-        this.parentOrderId = parentOrderId;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
-    }
-
-    public Integer getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(Integer provinceId) {
-        this.provinceId = provinceId;
-    }
 
 
 
     public void sumTotalAmount(){
 
-        this.benefitReduceAmount= this.benefitReduceAmount==null?BigDecimal.ZERO:this.benefitReduceAmount;
+        this.activityReduceAmount = this.activityReduceAmount ==null?BigDecimal.ZERO:this.activityReduceAmount;
+        this.couponReduceAmount = this.couponReduceAmount ==null?BigDecimal.ZERO:this.couponReduceAmount;
         this.feightFee= this.feightFee==null?BigDecimal.ZERO:this.feightFee;
         this.originalTotalAmount= this.originalTotalAmount==null?BigDecimal.ZERO:this.originalTotalAmount;
-        this.finalTotalAmount= this.finalTotalAmount==null?BigDecimal.ZERO:this.finalTotalAmount;
+        this.totalAmount = this.totalAmount ==null?BigDecimal.ZERO:this.totalAmount;
 
 
 
-        BigDecimal totalAmount=new BigDecimal("0");
+        BigDecimal totalAmount= BigDecimal.ZERO;
         for (OrderDetail orderDetail : orderDetailList) {
-            totalAmount= totalAmount.add(orderDetail.getOrderPrice().multiply(new BigDecimal(orderDetail.getSkuNum())));
+            BigDecimal splitActivityAmount = orderDetail.getSplitActivityAmount() ==null?BigDecimal.ZERO:orderDetail.getSplitActivityAmount();
+            BigDecimal couponReduceAmount = orderDetail.getSplitCouponAmount() ==null?BigDecimal.ZERO:orderDetail.getSplitCouponAmount();
+
+            BigDecimal splitTotalamount = orderDetail.getOrderPrice().multiply(new BigDecimal(orderDetail.getSkuNum()));
+            splitTotalamount=splitTotalamount.subtract(  splitActivityAmount).subtract(couponReduceAmount);
+            orderDetail.setSplitTotalAmount(splitTotalamount);
+            totalAmount= totalAmount.add(splitTotalamount);
         }
         this.originalTotalAmount=  totalAmount;
 
-        this.finalTotalAmount=originalTotalAmount.subtract(benefitReduceAmount).add(feightFee);
+        this.totalAmount =originalTotalAmount.subtract(activityReduceAmount).subtract(couponReduceAmount).add(feightFee);
 
     }
 

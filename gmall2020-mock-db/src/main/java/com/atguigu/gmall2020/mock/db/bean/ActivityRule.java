@@ -1,5 +1,7 @@
 package com.atguigu.gmall2020.mock.db.bean;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.io.Serializable;
 
@@ -11,19 +13,23 @@ import java.io.Serializable;
  * @author zhangchen
  * @since 2020-02-25
  */
+@Data
 public class ActivityRule implements Serializable {
+
+
+
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 编号
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 类型
      */
-    private Integer activityId;
+    private Long activityId;
 
     /**
      * 满减金额
@@ -43,80 +49,13 @@ public class ActivityRule implements Serializable {
     /**
      * 优惠折扣
      */
-    private Long benefitDiscount;
+    private BigDecimal benefitDiscount;
 
     /**
      * 优惠级别
      */
     private Long benefitLevel;
 
+    private String activityType;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(Integer activityId) {
-        this.activityId = activityId;
-    }
-
-    public BigDecimal getConditionAmount() {
-        return conditionAmount;
-    }
-
-    public void setConditionAmount(BigDecimal conditionAmount) {
-        this.conditionAmount = conditionAmount;
-    }
-
-    public Long getConditionNum() {
-        return conditionNum;
-    }
-
-    public void setConditionNum(Long conditionNum) {
-        this.conditionNum = conditionNum;
-    }
-
-    public BigDecimal getBenefitAmount() {
-        return benefitAmount;
-    }
-
-    public void setBenefitAmount(BigDecimal benefitAmount) {
-        this.benefitAmount = benefitAmount;
-    }
-
-    public Long getBenefitDiscount() {
-        return benefitDiscount;
-    }
-
-    public void setBenefitDiscount(Long benefitDiscount) {
-        this.benefitDiscount = benefitDiscount;
-    }
-
-    public Long getBenefitLevel() {
-        return benefitLevel;
-    }
-
-    public void setBenefitLevel(Long benefitLevel) {
-        this.benefitLevel = benefitLevel;
-    }
-
-    @Override
-    public String toString() {
-        return "ActivityRule{" +
-        "id=" + id +
-        ", activityId=" + activityId +
-        ", conditionAmount=" + conditionAmount +
-        ", conditionNum=" + conditionNum +
-        ", benefitAmount=" + benefitAmount +
-        ", benefitDiscount=" + benefitDiscount +
-        ", benefitLevel=" + benefitLevel +
-        "}";
-    }
 }

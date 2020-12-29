@@ -25,9 +25,29 @@ public class HttpUtil {
         return client;
     }
 
+    public static void get(String json){
+        String url= AppConfig.mock_url+"?param="+json;
+        Request request = new Request.Builder()
+                .url(url).get().build();
+        Call call = HttpUtil.getInstance().newCall(request);
+        Response response = null;
+        long start = System.currentTimeMillis();
+        try {
+            response = call.execute();
+            long end = System.currentTimeMillis();
+            System.out.println(response.body().string()+" used:"+(end-start)+" ms");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("发送失败...检查网络地址...");
 
-      public static void post(String json)  {
+        }
 
+
+    }
+
+
+    public static void post(String json)  {
+          System.out.println(json);
           RequestBody requestBody = RequestBody.create(    MediaType.parse("application/json; charset=utf-8"),json     );
           Request request = new Request.Builder()
                     .url(AppConfig.mock_url)
@@ -35,9 +55,11 @@ public class HttpUtil {
                 .build();
             Call call = HttpUtil.getInstance().newCall(request);
           Response response = null;
+          long start = System.currentTimeMillis();
           try {
               response = call.execute();
-              System.out.println(response.body().string());
+              long end = System.currentTimeMillis();
+              System.out.println(response.body().string()+" used:"+(end-start)+" ms");
           } catch (IOException e) {
               e.printStackTrace();
               throw new RuntimeException("发送失败...检查网络地址...");
