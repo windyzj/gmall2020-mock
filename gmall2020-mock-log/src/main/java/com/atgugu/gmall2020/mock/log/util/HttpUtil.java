@@ -6,6 +6,9 @@ import okhttp3.*;
 
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 public class HttpUtil {
 
@@ -26,7 +29,13 @@ public class HttpUtil {
     }
 
     public static void get(String json){
-        String url= AppConfig.mock_url+"?param="+json;
+        String encodeJson="";
+        try {
+              encodeJson = URLEncoder.encode(json, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url= AppConfig.mock_url+"?param="+encodeJson;
         Request request = new Request.Builder()
                 .url(url).get().build();
         Call call = HttpUtil.getInstance().newCall(request);
