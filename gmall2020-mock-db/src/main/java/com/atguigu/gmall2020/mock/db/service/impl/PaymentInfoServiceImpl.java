@@ -85,6 +85,7 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
             System.out.println("没有需要支付的订单！！ ");
             return;
         }
+        List<OrderInfo> orderListForUpdate=new ArrayList<>(orderInfoList.size());
         for (OrderInfo orderInfo : orderInfoList) {
            if( ifPayment.getRandBoolValue() ){
                PaymentInfo paymentInfo = new PaymentInfo();
@@ -100,12 +101,13 @@ public class PaymentInfoServiceImpl extends ServiceImpl<PaymentInfoMapper, Payme
                paymentList.add(paymentInfo);
 
                orderInfo.setOrderStatus(GmallConstant.ORDER_STATUS_PAID);
+               orderListForUpdate.add(orderInfo);
            }
         }
 
-         couponUseService.usedCoupon(orderInfoList);
+         couponUseService.usedCoupon(orderListForUpdate);
 
-         orderInfoService.updateOrderStatus(orderInfoList);
+         orderInfoService.updateOrderStatus(orderListForUpdate);
         log.warn("共有"+paymentList.size()+"订单完成支付");
          saveBatch(paymentList,100);
 
