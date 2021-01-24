@@ -13,7 +13,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>2020-12-18</version>
+    <version>2021-01-22</version>
 
     <artifactId>gmall2020-mock-log</artifactId>
 

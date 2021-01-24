@@ -94,7 +94,7 @@ public class Mocker implements Runnable  {
            pageBuilder.ts(ts);
            pageBuilder.checkError();
            logList.add(pageBuilder.build());
-          // ts+= pageDuringTime ;
+           ts+= 1000 ;
        }
 
        //  随机发送通知日志
